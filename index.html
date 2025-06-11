@@ -13,6 +13,7 @@
       margin: 0; padding: 0;
       display: flex; justify-content: center; align-items: center;
       min-height: 100vh;
+      color: #000000;
     }
     .container {
       background: #ffffff;
@@ -118,13 +119,23 @@
 
   <div class="container" id="settingsScreen" style="display:none">
     <h1>設定</h1>
-    <label for="colorMode">カラーモード:</label>
+
+    <label for="colorMode">カラーモード（背景）:</label>
     <select id="colorMode" onchange="changeColorMode()">
       <option value="default">ブルー（初期）</option>
       <option value="green">グリーン</option>
       <option value="pink">ピンク</option>
-      <option value="white">ホワイト</option>
     </select>
+
+    <label for="textColor">文字の色:</label>
+    <select id="textColor" onchange="changeTextColor()">
+      <option value="default">ブラック（初期）</option>
+      <option value="darkblue">ダークブルー</option>
+      <option value="gray">グレー</option>
+      <option value="pink">ピンク</option>
+      <option value="green">グリーン</option>
+    </select>
+
     <button class="back-button" onclick="goBackFromSettings()">戻る</button>
   </div>
 
@@ -233,10 +244,24 @@
         body.style.background = "linear-gradient(120deg, #a8e6cf 0%, #dcedc1 100%)";
       } else if (mode === "pink") {
         body.style.background = "linear-gradient(120deg, #f78fb3 0%, #f8a5c2 100%)";
-      } else if (mode === "white") {
-        body.style.background = "#ffffff";
       } else {
         body.style.background = "linear-gradient(120deg, #74ebd5 0%, #acb6e5 100%)";
+      }
+    }
+
+    function changeTextColor() {
+      const color = document.getElementById("textColor").value;
+      const body = document.body;
+      if (color === "darkblue") {
+        body.style.color = "#2d3436";
+      } else if (color === "gray") {
+        body.style.color = "#636e72";
+      } else if (color === "pink") {
+        body.style.color = "#e84393";
+      } else if (color === "green") {
+        body.style.color = "#00b894";
+      } else {
+        body.style.color = "#000000";
       }
     }
 
