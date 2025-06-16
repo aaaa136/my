@@ -46,9 +46,7 @@
       transition: background-color 0.3s ease;
       border: none;
     }
-    button:hover {
-      background-color: #74b9ff;
-    }
+    button:hover { background-color: #74b9ff; }
     .back-button { background-color: #636e72; margin-top: 1rem; }
     .result { margin-top: 2rem; }
     .task {
@@ -119,14 +117,13 @@
 
   <div class="container" id="settingsScreen" style="display:none">
     <h1>設定</h1>
-
     <label for="colorMode">カラーモード（背景）:</label>
     <select id="colorMode" onchange="changeColorMode()">
       <option value="default">ブルー（初期）</option>
       <option value="green">グリーン</option>
       <option value="pink">ピンク</option>
+      <option value="white">ホワイト</option>
     </select>
-
     <label for="textColor">文字の色:</label>
     <select id="textColor" onchange="changeTextColor()">
       <option value="default">ブラック（初期）</option>
@@ -135,7 +132,6 @@
       <option value="pink">ピンク</option>
       <option value="green">グリーン</option>
     </select>
-
     <button class="back-button" onclick="goBackFromSettings()">戻る</button>
   </div>
 
@@ -144,7 +140,7 @@
       "未来工学特論B": { day: 5, professors: ["柴崎亮介", "小塩篤史"], link: "https://rp.reitaku-u.ac.jp/uprx/up/pk/pky001/Pky00101.xhtml", type: "レポート" },
       "UX/UIデザイン": { day: 0, professors: ["笹尾知世", "河野洋"], link: "https://padlet.com/tsasao/ui-ux-design-2025-wdm3o6nojd6hlzv8", type: "最終レポート" },
       "デザイン思考B": { day: 5, professors: ["笹尾知世", "柴崎亮介"], link: "https://padlet.com/tsasao/b-2025-27rvfwzrev8txxrj", type: "レポート" },
-      "English for CommunicationA": { day: 3, professors: [], link: "https://classroom.google.com/", type: "Homework" },
+      "English for CommunicationA": { day: 3, professors: ["English Teacher"], link: "https://classroom.google.com/", type: "Homework" },
       "システム開発の基礎": { day: 1, professors: ["宗健", "塚田義典"], link: "https://rp.reitaku-u.ac.jp/uprx/up/pk/pky001/Pky00101.xhtml", type: "Access課題" },
       "ソフトウェア工学基礎": { day: 0, professors: ["塚田義典", "清田陽司"], link: "https://rp.reitaku-u.ac.jp/uprx/up/pk/pky001/Pky00101.xhtml", type: "小テスト" },
       "プロジェクトマネジメント": { day: 5, professors: ["宗健", "新井亜弓"], link: "https://rp.reitaku-u.ac.jp/uprx/up/pk/pky001/Pky00101.xhtml", type: "課題" }
@@ -154,12 +150,20 @@
       const id = document.getElementById("studentId").value.trim();
       const name = document.getElementById("studentName").value.trim();
       const pw = document.getElementById("password").value.trim();
-      if (id && name && pw) {
-        document.getElementById("loginScreen").style.display = "none";
-        document.getElementById("mainApp").style.display = "block";
-      } else {
+
+      if (!id || !name || !pw) {
         alert("すべての項目を入力してください。");
+        return;
       }
+
+      const prefix = id.slice(0, 6);
+      if (prefix !== "124481" && prefix !== "124482") {
+        alert("学籍番号が正しくありません。アクセスが許可されていません。");
+        return;
+      }
+
+      document.getElementById("loginScreen").style.display = "none";
+      document.getElementById("mainApp").style.display = "block";
     }
 
     function getDeadlineDate(baseDate, weekOffset, targetDay) {
@@ -190,13 +194,10 @@
             <div class="task-title">${task.type} ${taskNumber}</div>
             <div class="task-deadline">締切: ${formatDate(deadline)} 23:59</div>
             <div class="task-status">`;
-
           const oneWeekBefore = new Date(deadline.getTime() - 7 * 24 * 60 * 60 * 1000);
-
           if (i === 0 || today >= oneWeekBefore) {
             const submitted = Math.random() > 0.5;
             const now = new Date();
-
             if (submitted) {
               html += `<span class="submitted">ステータス: 提出済</span><br>`;
             } else if (now < deadline) {
@@ -209,12 +210,10 @@
             } else {
               html += `<span class="not-submitted">ステータス: 未提出</span><br>`;
             }
-
             html += `<a href="${task.link}" target="_blank">課題の詳細はこちら</a>`;
           } else {
             html += `公開前`;
           }
-
           html += `</div><div style="margin-top:8px;">課題作成者: ${task.professors.join("・") || "表示なし"}</div></div>`;
         }
         resultDiv.innerHTML = html + '<button class="back-button" onclick="goBack()">戻る</button>';
@@ -244,6 +243,8 @@
         body.style.background = "linear-gradient(120deg, #a8e6cf 0%, #dcedc1 100%)";
       } else if (mode === "pink") {
         body.style.background = "linear-gradient(120deg, #f78fb3 0%, #f8a5c2 100%)";
+      } else if (mode === "white") {
+        body.style.background = "#ffffff";
       } else {
         body.style.background = "linear-gradient(120deg, #74ebd5 0%, #acb6e5 100%)";
       }
