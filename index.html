@@ -27,7 +27,7 @@
     h1 {
       font-size: 2rem;
       font-weight: 700;
-      color: #2d3436;
+      color: inherit;
       margin-bottom: 1.5rem;
       text-align: center;
     }
@@ -61,7 +61,7 @@
       font-size: 1.1rem;
       font-weight: 600;
       margin-bottom: 0.5rem;
-      color: #2d3436;
+      color: inherit;
     }
     .task-deadline {
       color: #d63031;
@@ -86,7 +86,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
     #loginScreen { display: block; }
-    #mainApp { display: none; }
+    #mainApp, #settingsScreen { display: none; }
   </style>
 </head>
 <body>
@@ -115,22 +115,13 @@
     <button class="back-button" onclick="goToSettings()">設定</button>
   </div>
 
-  <div class="container" id="settingsScreen" style="display:none">
+  <div class="container" id="settingsScreen">
     <h1>設定</h1>
-    <label for="colorMode">カラーモード（背景）:</label>
+    <label for="colorMode">カラー</label>
     <select id="colorMode" onchange="changeColorMode()">
-      <option value="default">ブルー（初期）</option>
+      <option value="blue">青</option>
       <option value="green">グリーン</option>
       <option value="pink">ピンク</option>
-      <option value="white">ホワイト</option>
-    </select>
-    <label for="textColor">文字の色:</label>
-    <select id="textColor" onchange="changeTextColor()">
-      <option value="default">ブラック（初期）</option>
-      <option value="darkblue">ダークブルー</option>
-      <option value="gray">グレー</option>
-      <option value="pink">ピンク</option>
-      <option value="green">グリーン</option>
     </select>
     <button class="back-button" onclick="goBackFromSettings()">戻る</button>
   </div>
@@ -150,18 +141,15 @@
       const id = document.getElementById("studentId").value.trim();
       const name = document.getElementById("studentName").value.trim();
       const pw = document.getElementById("password").value.trim();
-
       if (!id || !name || !pw) {
         alert("すべての項目を入力してください。");
         return;
       }
-
       const prefix = id.slice(0, 6);
       if (prefix !== "124481" && prefix !== "124482") {
         alert("学籍番号が正しくありません。アクセスが許可されていません。");
         return;
       }
-
       document.getElementById("loginScreen").style.display = "none";
       document.getElementById("mainApp").style.display = "block";
     }
@@ -184,7 +172,6 @@
       const baseDate = new Date("2025-05-30T00:00:00");
       const today = new Date();
       const task = deadlines[subject];
-
       if (task) {
         let html = "";
         for (let i = 0; i < 8; i++) {
@@ -194,14 +181,14 @@
             <div class="task-title">${task.type} ${taskNumber}</div>
             <div class="task-deadline">締切: ${formatDate(deadline)} 23:59</div>
             <div class="task-status">`;
-          const oneWeekBefore = new Date(deadline.getTime() - 7 * 24 * 60 * 60 * 1000);
+          const oneWeekBefore = new Date(deadline.getTime() - 7 * 86400000);
           if (i === 0 || today >= oneWeekBefore) {
             const submitted = Math.random() > 0.5;
             const now = new Date();
             if (submitted) {
               html += `<span class="submitted">ステータス: 提出済</span><br>`;
             } else if (now < deadline) {
-              const daysLeft = (deadline - now) / (1000 * 60 * 60 * 24);
+              const daysLeft = (deadline - now) / 86400000;
               if (daysLeft <= 3) {
                 html += `<span class="warning">ステータス: 提出ができていません（期限間近）</span><br>`;
               } else {
@@ -214,7 +201,7 @@
           } else {
             html += `公開前`;
           }
-          html += `</div><div style="margin-top:8px;">課題作成者: ${task.professors.join("・") || "表示なし"}</div></div>`;
+          html += `</div><div style="margin-top:8px;">課題作成者: ${task.professors.join("・")}</div></div>`;
         }
         resultDiv.innerHTML = html + '<button class="back-button" onclick="goBack()">戻る</button>';
       } else {
@@ -241,27 +228,12 @@
       const body = document.body;
       if (mode === "green") {
         body.style.background = "linear-gradient(120deg, #a8e6cf 0%, #dcedc1 100%)";
+        body.style.color = "#14532d";
       } else if (mode === "pink") {
         body.style.background = "linear-gradient(120deg, #f78fb3 0%, #f8a5c2 100%)";
-      } else if (mode === "white") {
-        body.style.background = "#ffffff";
-      } else {
+        body.style.color = "#6d214f";
+      } else if (mode === "blue") {
         body.style.background = "linear-gradient(120deg, #74ebd5 0%, #acb6e5 100%)";
-      }
-    }
-
-    function changeTextColor() {
-      const color = document.getElementById("textColor").value;
-      const body = document.body;
-      if (color === "darkblue") {
-        body.style.color = "#2d3436";
-      } else if (color === "gray") {
-        body.style.color = "#636e72";
-      } else if (color === "pink") {
-        body.style.color = "#e84393";
-      } else if (color === "green") {
-        body.style.color = "#00b894";
-      } else {
         body.style.color = "#000000";
       }
     }
